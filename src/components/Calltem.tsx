@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { useUIStore } from "../store/uiStore";
 import type { Call } from "../types";
 
-export function CallItem({ call }: { call: Call }) {
+export const CallItem = memo(function CallItem({ call }: { call: Call }) {
   const setSelectedCall = useUIStore((s) => s.setSelectedCall);
 
   return (
@@ -13,4 +14,4 @@ export function CallItem({ call }: { call: Call }) {
       <div>{call.status}</div>
     </div>
   );
-}
+});

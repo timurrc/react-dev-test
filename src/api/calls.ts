@@ -16,10 +16,13 @@ export function fetchCalls(): Promise<Call[]> {
   });
 }
 
-export function updateCallStatus(
-  id: string,
-  status: Call["status"],
-): Promise<Call> {
+export function updateCallStatus({
+  id,
+  status,
+}: {
+  id: string;
+  status: Call["status"];
+}): Promise<Call> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (Math.random() < 0.3) {
@@ -27,7 +30,11 @@ export function updateCallStatus(
         return;
       }
 
-      const call = calls.find((c) => c.id === id)!;
+      const call = calls.find((c) => c.id === id);
+      if (!call) {
+        reject(new Error("Call not found"));
+        return;
+      }
       call.status = status;
       call.updatedAt = Date.now();
 

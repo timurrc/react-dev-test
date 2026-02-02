@@ -8,12 +8,18 @@ export function useSocket() {
 
   useEffect(() => {
     connectSocket();
-    const unsubscribe = subscribe((update: Partial<Call>) => {
-      queryClient.setQueryData<Call[]>(["calls"], (calls = []) =>
-        calls.map((c) => (c.id === update.id ? (update as Call) : c)),
-      );
-    });
+    const unsubscribe = subscribe((update) => {
+      queryClient.setQueryData<Call[]>(["calls"], (calls = []) => {
+        if (!calls || calls.length === 0) return calls;
 
-    return () => unsubscribe();
-  }, []);
+        const index = calls.findIndex((c) => c.id === update.id);
+        if (index === -1) return calls;
+
+        return calls.map((c) => 
+          c.id === update.id ? { ...c, ...update } : c
+        );
+      });
+    });
+    return unsubscribe;
+  }, [queryClient]);
 }
